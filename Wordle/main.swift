@@ -207,12 +207,17 @@ class Wordle {
 if runToday {
     let wordle = Wordle(answer: "goose")
     wordle.tries = -1
-    wordle.addConstraints([
-        "stone":"00000",
-        "hairy":"00002",
-        "lumpy":"02002",
-        // "winch":"02222"
-    ])
+
+    var constraints: [String:String] = [:]
+    for argument in CommandLine.arguments {
+        let keyValue = argument.split(separator: ":")
+        if keyValue.count == 2 {
+            let key = String(keyValue[0])
+            let value = String(keyValue[1])
+            constraints[key] = value
+        }
+    }
+    wordle.addConstraints(constraints)
     var remaining = wordle.possibleWords()
     remaining.sort { $0.score > $1.score }
     let remainingSlice = remaining.count > 15 ? Array(remaining[0...14]) : remaining
